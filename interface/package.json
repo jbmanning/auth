@@ -1,0 +1,40 @@
+{
+  "name": "auth-interface",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "node-sass": "^4.11.0",
+    "normalize.css": "^8.0.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-helmet": "^5.2.0",
+    "react-is": "^16.7.0",
+    "react-loadable": "^5.5.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@types/react": "^16.7.18",
+    "@types/react-router-dom": "^4.3.1",
+    "prettier": "^1.15.3"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "printWidth": 90
+  }
+}

@@ -1,0 +1,32 @@
+@import '../globals/all';
+
+.regular {
+  font-family: 'Open Sans', sans-serif;
+  color: transparentize($text-1, $text-transparency);
+}
+
+body {
+  @extend .regular;
+}
+
+.light-1 {
+  @extend .regular;
+  font-weight: $light-weight;
+}
+
+.light-2 {
+  @extend .light-1;
+  font-style: italic;
+}
+
+.bold-1 {
+  color: transparentize($text-2, $text-transparency);;
+
+  font-weight: $bold-weight;
+}
+
+.bold-2 {
+  @extend .bold-1;
+  border-bottom: 1px solid $bg-3;
+}
+

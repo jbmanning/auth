@@ -1,0 +1,17 @@
+@import "../../../scss/globals/all";
+
+.container {
+  border-bottom: 1px solid $bg-3;
+  background: $bg-2;
+}
+
+.content {
+  height: 52px;
+
+  display: flex;
+  flex-direction: row;
+  // Vertical centering
+  align-items: center;
+  // Horizontal centering
+  justify-content: space-between;
+}

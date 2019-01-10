@@ -1,0 +1,14 @@
+@import "../../../scss/globals/all";
+
+.container {
+
+}
+
+.content {
+  padding: 32px;
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

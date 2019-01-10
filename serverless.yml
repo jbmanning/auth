@@ -1,0 +1,62 @@
+service: auth
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-hooks-plugin
+  - serverless-webpack
+  - serverless-offline
+  - serverless-s3-sync
+
+provider:
+  name: aws
+
+  region: us-east-1
+  runtime: nodejs8.10
+  memorySize: 256
+  timeout: 6
+
+  stage: ${opt:stage, 'dev'}
+  environment:
+    STAGE: ${self:provider.stage}
+    TABLE_NAME: ${self:custom.tableName}
+
+    SSM_PRIVATE_KEY_NAME: auth-jwt-${self:provider.stage}-private.pem
+    SSM_PUBLIC_KEY_NAME: auth-jwt-${self:provider.stage}-public.pem
+
+    MAILGUN_API_KEY: "asdf"
+    MAILGUN_DOMAIN: "mg.jman.me"
+
+custom:
+  hooks:
+    before:package:createDeploymentArtifacts:
+      - "yarn --cwd interface/ build"
+
+  s3sync:
+    - bucketName: jman.me/auth/dev/interface
+      localDir: ./interface/build
+      acl: public-read
+
+  tableName: auth-${self:provider.stage}
+  tableThroughputs:
+    prod: 5
+    default: 1
+  tableThroughput: ${self:custom.tableThroughputs.${self:provider.stage}, self:custom.tableThroughputs.default}
+
+  tableDeletions:
+    prod: "Retain"
+    default: "Delete"
+  tableDeletion: ${self:custom.tableDeletions.${self:provider.stage}, self:custom.tableDeletions.default}
+
+package:
+  individually: true
+  include:
+    - "!**"
+    - "src/**"
+    - "!src/endpoints/**"
+
+functions:
+  - ${file(./src/endpoints/create/definition.yml)}
+
+resources:
+  Resources:
+    - ${file(./resources/auth-table.yml)}

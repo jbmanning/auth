@@ -1,0 +1,13 @@
+.*/
+node_modules/
+build/
+
+*.map
+*.sh
+*.html
+*.hbs
+*.env
+
+yarn.lock
+.gitignore
+.prettierignore
