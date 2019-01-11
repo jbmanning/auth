@@ -14,3 +14,8 @@
     transform: translate(0, -50%);
   }
 }
+
+@mixin regular() {
+  font-family: 'Open Sans', sans-serif;
+  color: transparentize($text-1, $text-transparency);
+}

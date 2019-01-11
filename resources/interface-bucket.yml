@@ -1,0 +1,10 @@
+Resources:
+  interfaceBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: ${self:custom.deletionPolicy}
+    Properties:
+      BucketName: ${self:custom.interfaceBucketName}
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html

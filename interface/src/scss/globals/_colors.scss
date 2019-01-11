@@ -1,6 +1,6 @@
 @import 'values';
 
-$pc-1: #F19953;
+$pc-1: #9aa9f1;
 
 $themes: (
   cool: (
@@ -16,8 +16,8 @@ $themes: (
     bg-2: hsl(0, 0%, 93%),
     bg-3: hsl(0, 0%, 85%),
 
-    text-1: hsl(0, 0%, 42%),
-    text-2: hsl(0, 0%, 27%)
+    text-1: hsl(0, 0%, 12%),
+    text-2: hsl(0, 0%, 23%)
   ),
   warm: (
     bg-1: hsl(24, 20%, 95%),
@@ -29,7 +29,7 @@ $themes: (
   )
 );
 
-$theme: map-get($themes, warm);
+$theme: map-get($themes, neutral);
 
 $bg-0: white;
 $bg-1: map_get($theme, bg-1);

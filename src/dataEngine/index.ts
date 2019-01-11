@@ -42,34 +42,39 @@ export const getUser = async (
     ...options
   };
 
-  const rawUser = await dynamo
-    .getItem(dbParams)
-    .promise()
-    .then((data) => {
-      if (!data.Item) return null;
-      return converter.unmarshall(data.Item || {});
-    })
-    .catch((error) => {
-      dataUtils.printErrors(error);
-      return null;
-    });
-
-  if (!rawUser) {
-    errors.push("failed to fetch user");
-
+  let rawUser;
+  try {
+    rawUser = await dynamo
+      .getItem(dbParams)
+      .promise()
+      .then((data) => {
+        if (!data.Item) return null;
+        return converter.unmarshall(data.Item);
+      })
+      .catch((err) => {
+        dataUtils.printErrors(err);
+        throw err;
+      });
+  } catch (err) {
     return {
-      errors,
+      errors: ["failed to fetch user"],
       value: null
     };
-  } else {
-    const { errors: userErrors, value: user } = parseUnknown(userSchema, rawUser);
-    if (userErrors.length > 0) errors = errors.concat(userErrors);
-
-    return {
-      errors,
-      value: user
-    };
   }
+
+  let user: IUser | null;
+  if (rawUser) {
+    let { errors: userErrors, value } = parseUnknown(userSchema, rawUser);
+    if (userErrors.length > 0) errors = errors.concat(userErrors);
+    user = value;
+  } else {
+    user = null;
+  }
+
+  return {
+    errors,
+    value: errors.length === 0 ? user : null
+  };
 };
 
 export const createUser = async (
@@ -80,12 +85,14 @@ export const createUser = async (
 
   const emailErrors = dataUtils.validateEmail(email);
   const passwordErrors = dataUtils.validatePassword(password);
-  const { value: oldUser } = await getUser(email);
+  const { errors: getUserErrors, value: oldUser } = await getUser(email);
+  if (getUserErrors.length > 0) return ["failed to check email was not taken"];
 
   const errors = emailErrors.concat(passwordErrors);
   if (oldUser && oldUser.email === email) {
     errors.push("Email is already taken");
   }
+
   if (errors.length > 0) return errors;
 
   const dbParams = {

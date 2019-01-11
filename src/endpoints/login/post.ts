@@ -5,7 +5,6 @@ import { createUser } from "src/dataEngine";
 import { parseUnknown } from "src/utils";
 
 const inputSchema = t.type({
-  name: t.string,
   email: t.string,
   password: t.string
 });
@@ -20,14 +19,14 @@ const handler: APIGatewayProxyHandler = async (event) => {
       const userCreationErrors = await createUser(body.email, body.password);
       errors = errors.concat(userCreationErrors);
 
-      if (errors.length === 0 && process.env.STAGE === "prod") {
+      if (process.env.STAGE === "prod") {
         console.warn("IMPLEMENT MG VALIDATION");
       }
     }
   }
 
   return {
-    statusCode: errors.length === 0 ? 200 : 400,
+    statusCode: errors.length === 0 ? 400 : 200,
     body: JSON.stringify({
       errors: errors,
       success: errors.length === 0

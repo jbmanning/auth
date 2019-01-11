@@ -31,10 +31,15 @@ custom:
     before:package:createDeploymentArtifacts:
       - "yarn --cwd interface/ build"
 
-  s3sync:
-    - bucketName: jman.me/auth/dev/interface
-      localDir: ./interface/build
+  s3Sync:
+    - bucketName: ${self:custom.interfaceBucketName}
+      localDir: interface/build
       acl: public-read
+
+  interfaceBucketNames:
+    prod: auth.jman.me
+    default: ${self:provider.stage}.auth.jman.me
+  interfaceBucketName: ${self:custom.interfaceBucketNames.${self:provider.stage}, self:custom.interfaceBucketNames.default}
 
   tableName: auth-${self:provider.stage}
   tableThroughputs:
@@ -42,10 +47,10 @@ custom:
     default: 1
   tableThroughput: ${self:custom.tableThroughputs.${self:provider.stage}, self:custom.tableThroughputs.default}
 
-  tableDeletions:
+  deletionPolicys:
     prod: "Retain"
     default: "Delete"
-  tableDeletion: ${self:custom.tableDeletions.${self:provider.stage}, self:custom.tableDeletions.default}
+  deletionPolicy: ${self:custom.deletionPolicys.${self:provider.stage}, self:custom.deletionPolicys.default}
 
 package:
   individually: true
@@ -56,7 +61,8 @@ package:
 
 functions:
   - ${file(./src/endpoints/create/definition.yml)}
+  - ${file(./src/endpoints/login/definition.yml)}
 
 resources:
-  Resources:
-    - ${file(./resources/auth-table.yml)}
+  - ${file(./resources/auth-table.yml)}
+  - ${file(./resources/interface-bucket.yml)}
