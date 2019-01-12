@@ -7,7 +7,7 @@ class Header extends PureComponent {
   render = () => (
     <header className={styles.container}>
       <div className={`${styles.content} page-content`}>
-        <div />
+        <div>DO NOT INPUT SENSITIVE DATA.</div>
         <div>
           <Link to="/login" className="btn btn-2" style={{ marginRight: "2px" }}>
             Log In

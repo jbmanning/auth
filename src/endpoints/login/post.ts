@@ -10,13 +10,13 @@ const loginSchema = t.type({
   password: t.string
 });
 
-const handler: APIGatewayProxyHandler = async (event) => {
+const rawHandler: APIGatewayProxyHandler = async (event) => {
   let { errors: bodyErrors, value: body } = parseUnknown(loginSchema, event.body);
   if (bodyErrors.length > 0 || body === null) {
     return {
       statusCode: 400,
       body: JSON.stringify({
-        error_code: "invalid_parameters"
+        errors: ["invalid_parameters"]
       })
     };
   }
@@ -28,7 +28,7 @@ const handler: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error_code: "data_engine_failure"
+        errors: ["data_engine_failure"]
       })
     };
   }
@@ -37,6 +37,7 @@ const handler: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
+        errors: [],
         name: user.name
       })
     };
@@ -44,10 +45,28 @@ const handler: APIGatewayProxyHandler = async (event) => {
     return {
       statusCode: 401,
       body: JSON.stringify({
-        error_code: "bad_credentials"
+        errors: ["bad_credentials"]
       })
     };
   }
+};
+
+const errBody = {
+  statusCode: 500,
+  body: JSON.stringify({
+    errors: ["internal_error"]
+  })
+};
+
+const handler: APIGatewayProxyHandler = async (event, context, cb) => {
+  const raw = (await rawHandler(event, context, cb)) || errBody;
+  return {
+    ...raw,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true
+    }
+  };
 };
 
 export { handler };

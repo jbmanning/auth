@@ -1,13 +1,13 @@
 {
-  "login": {
-    "handler": "src/endpoints/login/post.handler",
+  "signup": {
+    "handler": "src/endpoints/signup/post.handler",
     "package": {
-      "include": ["src/endpoints/login/**"]
+      "include": ["src/endpoints/signup/**"]
     },
     "events": [
       {
         "http": {
-          "path": "/login",
+          "path": "/signup",
           "method": "post",
           "cors": true
         }

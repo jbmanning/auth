@@ -67,7 +67,7 @@
     "include": ["!**", "src/**", "!src/endpoints/**"]
   },
   "functions": [
-    "${file(./src/endpoints/create/definition.json)}",
+    "${file(./src/endpoints/signup/definition.json)}",
     "${file(./src/endpoints/login/definition.json)}"
   ],
   "resources": [

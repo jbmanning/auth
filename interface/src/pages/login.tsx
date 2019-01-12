@@ -8,7 +8,17 @@ import { parseUnknown } from "../utils";
 import Layout from "../components/layout";
 import SimpleForm from "../components/simpleForm";
 
-class LoginFormBody extends PureComponent<{ errors: Array<string> }> {
+type loginFormState = {
+  errors: Array<string>;
+  params: {
+    email: string;
+    password: string;
+  };
+};
+
+class LoginFormBody extends PureComponent<
+  loginFormState & { changeFormParam: (name: string) => (event) => void }
+> {
   getErrors = () => {
     const { errors } = this.props;
     if (errors.length > 0) {
@@ -23,12 +33,28 @@ class LoginFormBody extends PureComponent<{ errors: Array<string> }> {
   };
 
   render = () => {
+    const { changeFormParam } = this.props;
+    const { email, password } = this.props.params;
     return (
       <>
         <div className="bold-1 center">Welcome Back!</div>
         {this.getErrors()}
-        <input className="inp" type="text" placeholder="Email Address" name="email" />
-        <input className="inp" type="password" placeholder="Password" name="password" />
+        <input
+          className="inp"
+          type="text"
+          placeholder="Email Address"
+          name="email"
+          value={email}
+          onChange={changeFormParam("email")}
+        />
+        <input
+          className="inp"
+          type="password"
+          placeholder="Password"
+          name="password"
+          value={password}
+          onChange={changeFormParam("password")}
+        />
 
         <button className="btn btn-1">Log In</button>
       </>
@@ -51,7 +77,7 @@ class LoginForm extends PureComponent {
   static contextType = AppContext;
   context: React.ContextType<typeof AppContext>;
 
-  state = {
+  state: loginFormState = {
     errors: [],
     params: {
       email: "",
@@ -61,13 +87,21 @@ class LoginForm extends PureComponent {
 
   static responseSchema = t.type({
     errors: t.array(t.string),
-    success: t.boolean
+    name: t.string
   });
 
   submitLogin = async () => {
     if (this.context === null) throw new Error("missing context");
 
     const { params } = this.state;
+    if (!params.email || !params.password) {
+      this.setState({
+        ...this.state,
+        errors: ["Email and Password required"]
+      });
+      return;
+    }
+
     const req = fetch(LOGIN_URL, {
       ...DEFAULT_FETCH_PROPS,
       body: JSON.stringify(params)
@@ -81,18 +115,16 @@ class LoginForm extends PureComponent {
       .catch((err) => {
         return null;
       });
-
     let errors: Array<string> = [];
+
     let { value: loginAPIResponse } = parseUnknown(LoginForm.responseSchema, resp);
-    if (loginAPIResponse !== null) {
-      if (loginAPIResponse.errors.length === 0 && loginAPIResponse.success) {
-        this.context.funcs.setSession("SUCCESS");
-        return;
-      } else {
-        errors = errors.concat(loginAPIResponse.errors);
-      }
+
+    if (loginAPIResponse !== null && loginAPIResponse.errors.length === 0) {
+      errors = [`SUCCESS! Your name is ${loginAPIResponse.name}!`];
     } else {
-      errors.push("api request failed");
+      if (loginAPIResponse === null) {
+        errors.push("api request failed");
+      }
     }
 
     this.setState({
@@ -101,11 +133,23 @@ class LoginForm extends PureComponent {
     });
   };
 
+  changeFormParam = (name: string) => {
+    return (event) => {
+      this.setState({
+        ...this.state,
+        params: {
+          ...this.state.params,
+          [name]: event.target.value
+        }
+      });
+    };
+  };
+
   render = () => {
     return (
       <SimpleForm
         action={this.submitLogin}
-        body={<LoginFormBody errors={this.state.errors} />}
+        body={<LoginFormBody {...this.state} changeFormParam={this.changeFormParam} />}
         footer={<LoginFormFooter />}
       />
     );

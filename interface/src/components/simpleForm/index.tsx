@@ -3,7 +3,7 @@ import React, { PureComponent, ReactNode } from "react";
 import styles from "./_form.module.scss";
 
 type SimpleFormProps = {
-  action?: () => void;
+  action: () => void;
   body: ReactNode;
   footer?: ReactNode;
 };
