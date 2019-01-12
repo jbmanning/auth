@@ -11,17 +11,6 @@
           "method": "post"
         }
       }
-    ],
-    "iamRoleStatements": [
-      {
-        "Effect": "Allow",
-        "Action": ["dynamodb:GetItem"],
-        "Resource": [
-          {
-            "Fn::GetAtt": ["authTable", "Arn"]
-          }
-        ]
-      }
     ]
   }
 }

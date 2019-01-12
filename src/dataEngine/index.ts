@@ -24,14 +24,6 @@ export type IUser = t.TypeOf<typeof userSchema>;
 export const getUser = async (rawEmail: string): Promise<IFuncResponse<IUser | null>> => {
   const email = rawEmail.toLowerCase();
 
-  let errors = dataUtils.validateEmail(email);
-  if (errors.length > 0) {
-    return {
-      errors,
-      value: null
-    };
-  }
-
   const dbParams = {
     ...defaultDBParams,
     Key: {
@@ -59,6 +51,7 @@ export const getUser = async (rawEmail: string): Promise<IFuncResponse<IUser | n
     };
   }
 
+  let errors: Array<string> = [];
   let user: IUser | null;
   if (rawUser) {
     let { errors: userErrors, value } = parseUnknown(userSchema, rawUser);
@@ -91,20 +84,20 @@ export const createUser = async (raw: IUserCreationParams): Promise<Array<string
 
   const emailErrors = dataUtils.validateEmail(params.email);
   const passwordErrors = dataUtils.validatePassword(params.password);
+  const errors = emailErrors.concat(passwordErrors);
+
   const { errors: getUserErrors, value: oldUser } = await getUser(params.email);
   if (getUserErrors.length > 0) return ["failed to check email was not taken"];
 
-  const errors = emailErrors.concat(passwordErrors);
   if (oldUser && oldUser.email === params.email) {
     errors.push("Email is already taken");
   }
-
   if (errors.length > 0) return errors;
 
   const newUser: IUser = {
     email: params.email,
     name: params.name,
-    hash: crypto.createHash(params.password),
+    hash: await crypto.createHash(params.password),
     active: false
   };
 

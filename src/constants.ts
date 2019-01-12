@@ -1,7 +1,7 @@
 // tslint:disable:completed-docs
 export const PWD_MIN_LENGTH = 10;
 export const PWD_MAX_LENGTH = 72;
-export const SALT_ROUNDS = 14;
+export const SALT_ROUNDS = 12;
 
 // 5 minutes
 export const ACCESS_EXPIRY = 5 * 60;

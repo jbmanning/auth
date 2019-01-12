@@ -10,8 +10,8 @@
     "name": "aws",
     "region": "us-east-1",
     "runtime": "nodejs8.10",
-    "memorySize": 256,
-    "timeout": 6,
+    "memorySize": 1024,
+    "timeout": 4,
     "stage": "${opt:stage, 'prod'}",
     "environment": {
       "STAGE": "${self:provider.stage}",
@@ -20,7 +20,18 @@
       "SSM_PUBLIC_KEY_NAME": "auth-jwt-${self:provider.stage}-public.pem",
       "MAILGUN_API_KEY": "asdf",
       "MAILGUN_DOMAIN": "mg.jman.me"
-    }
+    },
+    "iamRoleStatements": [
+      {
+        "Effect": "Allow",
+        "Action": ["dynamodb:PutItem", "dynamodb:GetItem"],
+        "Resource": [
+          {
+            "Fn::GetAtt": ["authTable", "Arn"]
+          }
+        ]
+      }
+    ]
   },
   "custom": {
     "hooks": {
