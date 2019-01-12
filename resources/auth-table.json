@@ -4,6 +4,7 @@
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
         "TableName": "${self:custom.tableName}",
+        "BillingMode": "PAY_PER_REQUEST",
         "AttributeDefinitions": [
           {
             "AttributeName": "email",
@@ -15,11 +16,7 @@
             "AttributeName": "email",
             "KeyType": "HASH"
           }
-        ],
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": "${self:custom.tableThroughput}",
-          "WriteCapacityUnits": "${self:custom.tableThroughput}"
-        }
+        ]
       }
     }
   }
