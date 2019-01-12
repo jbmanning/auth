@@ -1,0 +1,27 @@
+{
+  "login": {
+    "handler": "src/endpoints/login/post.handler",
+    "package": {
+      "include": ["src/endpoints/login/**"]
+    },
+    "events": [
+      {
+        "http": {
+          "path": "/login",
+          "method": "post"
+        }
+      }
+    ],
+    "iamRoleStatements": [
+      {
+        "Effect": "Allow",
+        "Action": ["dynamodb:GetItem"],
+        "Resource": [
+          {
+            "Fn::GetAtt": ["authTable", "Arn"]
+          }
+        ]
+      }
+    ]
+  }
+}

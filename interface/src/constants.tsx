@@ -1,4 +1,4 @@
-const API_URL = "asdfasdf";
+const API_URL = "https://api.jman.me/auth";
 
 export const SIGNUP_URL = `${API_URL}/signup`;
 export const LOGIN_URL = `${API_URL}/login`;

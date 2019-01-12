@@ -1,0 +1,27 @@
+{
+  "Resources": {
+    "authTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "${self:custom.deletionPolicy}",
+      "Properties": {
+        "TableName": "${self:custom.tableName}",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "email",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "email",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${self:custom.tableThroughput}",
+          "WriteCapacityUnits": "${self:custom.tableThroughput}"
+        }
+      }
+    }
+  }
+}

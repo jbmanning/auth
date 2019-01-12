@@ -1,0 +1,66 @@
+{
+  "service": "auth",
+  "plugins": [
+    "serverless-hooks-plugin",
+    "serverless-webpack",
+    "serverless-offline",
+    "serverless-s3-sync"
+  ],
+  "provider": {
+    "name": "aws",
+    "region": "us-east-1",
+    "runtime": "nodejs8.10",
+    "memorySize": 256,
+    "timeout": 6,
+    "stage": "${opt:stage, 'dev'}",
+    "environment": {
+      "STAGE": "${self:provider.stage}",
+      "TABLE_NAME": "${self:custom.tableName}",
+      "SSM_PRIVATE_KEY_NAME": "auth-jwt-${self:provider.stage}-private.pem",
+      "SSM_PUBLIC_KEY_NAME": "auth-jwt-${self:provider.stage}-public.pem",
+      "MAILGUN_API_KEY": "asdf",
+      "MAILGUN_DOMAIN": "mg.jman.me"
+    }
+  },
+  "custom": {
+    "hooks": {
+      "before:package:createDeploymentArtifacts": ["yarn --cwd interface/ build"]
+    },
+    "s3Sync": [
+      {
+        "bucketName": "${self:custom.interfaceUrl}",
+        "localDir": "interface/build",
+        "acl": "public-read"
+      }
+    ],
+    "cloudFrontOriginId": "S3-${self:custom.interfaceUrl}",
+    "interfaceUrls": {
+      "prod": "auth.jman.me",
+      "default": "${self:provider.stage}.auth.jman.me"
+    },
+    "interfaceUrl": "${self:custom.interfaceUrls.${self:provider.stage}, self:custom.interfaceUrls.default}",
+    "tableName": "auth-${self:provider.stage}",
+    "tableThroughputs": {
+      "prod": 5,
+      "default": 1
+    },
+    "tableThroughput": "${self:custom.tableThroughputs.${self:provider.stage}, self:custom.tableThroughputs.default}",
+    "deletionPolicys": {
+      "prod": "Retain",
+      "default": "Delete"
+    },
+    "deletionPolicy": "${self:custom.deletionPolicys.${self:provider.stage}, self:custom.deletionPolicys.default}"
+  },
+  "package": {
+    "individually": true,
+    "include": ["!**", "src/**", "!src/endpoints/**"]
+  },
+  "functions": [
+    "${file(./src/endpoints/create/definition.json)}",
+    "${file(./src/endpoints/login/definition.json)}"
+  ],
+  "resources": [
+    "${file(./resources/auth-table.json)}",
+    "${file(./resources/interface.json)}"
+  ]
+}

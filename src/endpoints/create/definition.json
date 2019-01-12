@@ -1,0 +1,27 @@
+{
+  "create": {
+    "handler": "src/endpoints/create/post.handler",
+    "package": {
+      "include": ["src/endpoints/create/**"]
+    },
+    "events": [
+      {
+        "http": {
+          "path": "/create",
+          "method": "post"
+        }
+      }
+    ],
+    "iamRoleStatements": [
+      {
+        "Effect": "Allow",
+        "Action": ["dynamodb:PutItem"],
+        "Resource": [
+          {
+            "Fn::GetAtt": ["authTable", "Arn"]
+          }
+        ]
+      }
+    ]
+  }
+}
