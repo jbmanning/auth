@@ -14,16 +14,14 @@ const defaultDBParams = {
 
 const userSchema = t.type({
   email: t.string,
+  name: t.string,
   hash: t.string,
   active: t.boolean
 });
 
-type IUser = t.TypeOf<typeof userSchema>;
+export type IUser = t.TypeOf<typeof userSchema>;
 
-export const getUser = async (
-  rawEmail: string,
-  options = {}
-): Promise<IFuncResponse<IUser | null>> => {
+export const getUser = async (rawEmail: string): Promise<IFuncResponse<IUser | null>> => {
   const email = rawEmail.toLowerCase();
 
   let errors = dataUtils.validateEmail(email);
@@ -38,8 +36,7 @@ export const getUser = async (
     ...defaultDBParams,
     Key: {
       email: converter.input(email)
-    },
-    ...options
+    }
   };
 
   let rawUser;
@@ -77,32 +74,44 @@ export const getUser = async (
   };
 };
 
-export const createUser = async (
-  rawEmail: string,
-  password: string
-): Promise<Array<string>> => {
-  const email = rawEmail.toLowerCase();
+export const userCreationParams = t.type({
+  name: t.string,
+  email: t.string,
+  password: t.string
+});
 
-  const emailErrors = dataUtils.validateEmail(email);
-  const passwordErrors = dataUtils.validatePassword(password);
-  const { errors: getUserErrors, value: oldUser } = await getUser(email);
+// type IUserCreationParams = t.Type<typeof userCreationParams>;
+interface IUserCreationParams extends t.TypeOf<typeof userCreationParams> {}
+
+export const createUser = async (raw: IUserCreationParams): Promise<Array<string>> => {
+  const params = {
+    ...raw,
+    email: raw.email.toLowerCase()
+  };
+
+  const emailErrors = dataUtils.validateEmail(params.email);
+  const passwordErrors = dataUtils.validatePassword(params.password);
+  const { errors: getUserErrors, value: oldUser } = await getUser(params.email);
   if (getUserErrors.length > 0) return ["failed to check email was not taken"];
 
   const errors = emailErrors.concat(passwordErrors);
-  if (oldUser && oldUser.email === email) {
+  if (oldUser && oldUser.email === params.email) {
     errors.push("Email is already taken");
   }
 
   if (errors.length > 0) return errors;
 
+  const newUser: IUser = {
+    email: params.email,
+    name: params.name,
+    hash: crypto.createHash(params.password),
+    active: false
+  };
+
   const dbParams = {
     ...defaultDBParams,
     ConditionExpression: "attribute_not_exists(email)",
-    Item: converter.marshall({
-      email: email,
-      hash: crypto.createHash(password),
-      active: false
-    })
+    Item: converter.marshall(newUser)
   };
 
   const creationErrors = await dynamo

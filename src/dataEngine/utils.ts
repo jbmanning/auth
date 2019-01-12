@@ -97,8 +97,8 @@ export const validatePassword = (password: string): Array<string> => {
 };
 
 // TODO: Figure out permissions for these.
-const certPrivate = ssm.getParameter(process.env.SSM_PRIVATE_KEY_NAME || "");
-const certPublic = ssm.getParameter(process.env.SSM_PUBLIC_KEY_NAME || "");
+// const certPrivate = ssm.getParameter(process.env.SSM_PRIVATE_KEY_NAME || "");
+// const certPublic = ssm.getParameter(process.env.SSM_PUBLIC_KEY_NAME || "");
 
 const printError = (err) => {
   console.log(red(`${err.code}:`), `${err.message}`);
