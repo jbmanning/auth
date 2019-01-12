@@ -1,5 +1,5 @@
 {
-  "service": "auth",
+  "service": "auth-v2",
   "plugins": [
     "serverless-hooks-plugin",
     "serverless-webpack",
@@ -12,7 +12,7 @@
     "runtime": "nodejs8.10",
     "memorySize": 256,
     "timeout": 6,
-    "stage": "${opt:stage, 'dev'}",
+    "stage": "${opt:stage, 'prod'}",
     "environment": {
       "STAGE": "${self:provider.stage}",
       "TABLE_NAME": "${self:custom.tableName}",

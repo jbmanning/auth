@@ -2,54 +2,12 @@
   "Resources": {
     "interfaceBucket": {
       "Type": "AWS::S3::Bucket",
-      "DeletionPolicy": "${self:custom.deletionPolicy}",
       "Properties": {
         "BucketName": "${self:custom.interfaceUrl}",
         "AccessControl": "PublicRead",
         "WebsiteConfiguration": {
           "IndexDocument": "index.html",
           "ErrorDocument": "index.html"
-        }
-      }
-    },
-    "interfaceCloudFront": {
-      "Type": "AWS::CloudFront::Distribution",
-      "DeletionPolicy": "${self:custom.deletionPolicy}",
-      "Properties": {
-        "DistributionConfig": {
-          "Enabled": true,
-          "Aliases": ["${self:custom.interfaceUrl}"],
-          "DefaultCacheBehavior": {
-            "AllowedMethods": ["GET", "HEAD"],
-            "Compress": true,
-            "DefaultTTL": 10,
-            "MinTTL": 0,
-            "MaxTTL": 1440,
-            "ForwardedValues": {
-              "Cookies": {
-                "Forward": "none"
-              },
-              "QueryString": false
-            },
-            "TargetOriginId": "${self:custom.cloudFrontOriginId}",
-            "ViewerProtocolPolicy": "redirect-to-https"
-          },
-          "HttpVersion": "http2",
-          "Origins": [
-            {
-              "Id": "${self:custom.cloudFrontOriginId}",
-              "DomainName": "${self:custom.interfaceUrl}.s3.amazonaws.com",
-              "CustomOriginConfig": {
-                "OriginProtocolPolicy": "https-only"
-              }
-            }
-          ],
-          "PriceClass": "PriceClass_100",
-          "ViewerCertificate": {
-            "AcmCertificateArn": "arn:aws:acm:us-east-1:996690274740:certificate/b10b9e51-6d61-4892-a974-6e42157a55f7",
-            "MinimumProtocolVersion": "TLSv1.2_2018",
-            "SslSupportMethod": "sni-only"
-          }
         }
       }
     }

@@ -2,7 +2,6 @@
   "Resources": {
     "authTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "${self:custom.deletionPolicy}",
       "Properties": {
         "TableName": "${self:custom.tableName}",
         "AttributeDefinitions": [
