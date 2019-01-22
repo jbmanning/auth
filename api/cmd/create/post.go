@@ -8,7 +8,7 @@ import (
 	"github.com/jbmanning/auth/api/pkg/www"
 )
 
-type SignupResponse struct {
+type CreateResponse struct {
 	Errors         []string `json:"errors"`
 	NameErrors     []string `json:"name_errors"`
 	EmailErrors    []string `json:"email_errors"`
@@ -19,7 +19,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	params := &de.CreateUserParams{}
 	err := json.Unmarshal([]byte(request.Body), params)
 	if err != nil {
-		return www.GetResp(400, SignupResponse{
+		return www.GetResp(400, CreateResponse{
 			Errors: []string{www.InvalidJSONError},
 		})
 	}
@@ -34,7 +34,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 		code = 400
 	}
 
-	return www.GetResp(code, SignupResponse{
+	return www.GetResp(code, CreateResponse{
 		NameErrors:     creationErrs.NameErrors,
 		EmailErrors:    creationErrs.EmailErrors,
 		PasswordErrors: creationErrs.PasswordErrors,

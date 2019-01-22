@@ -1,13 +1,13 @@
 {
-  "signup": {
+  "create": {
     "package": {
-      "include": ["bin/signup-post"]
+      "include": ["bin/create-post"]
     },
-    "handler": "bin/signup-post",
+    "handler": "bin/create-post",
     "events": [
       {
         "http": {
-          "path": "/signup",
+          "path": "/create",
           "method": "POST",
           "cors": true
         }

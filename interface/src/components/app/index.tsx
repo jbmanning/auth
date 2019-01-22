@@ -28,7 +28,7 @@ class App extends PureComponent<IAppProps> {
       component: Login
     },
     {
-      path: "/signup",
+      path: "/create",
       component: Signup
     },
     {

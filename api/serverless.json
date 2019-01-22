@@ -5,8 +5,8 @@
     "name": "aws",
     "region": "us-east-1",
     "runtime": "go1.x",
-    "memorySize": 512,
-    "timeout": 4,
+    "memorySize": 768,
+    "timeout": 6,
     "stage": "${opt:stage, 'prod'}",
     "environment": {
       "STAGE": "${self:provider.stage}",
@@ -44,7 +44,7 @@
     "include": ["!**"]
   },
   "functions": [
-    "${file(./cmd/signup/definition.json)}",
+    "${file(./cmd/create/definition.json)}",
     "${file(./cmd/login/definition.json)}"
   ],
   "resources": ["${file(../resources/auth-table.json)}"]

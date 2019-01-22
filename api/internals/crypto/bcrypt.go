@@ -1,8 +1,10 @@
 package crypto
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
-var HashCost = 14
+var HashCost = 12
 
 func CreateHash(password string) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), HashCost)
