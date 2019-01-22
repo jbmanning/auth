@@ -1,9 +1,9 @@
 {
   "login": {
     "package": {
-      "include": ["bin/login"]
+      "include": ["bin/login-post"]
     },
-    "hander": "bin/login",
+    "handler": "bin/login-post",
     "events": [
       {
         "http": {

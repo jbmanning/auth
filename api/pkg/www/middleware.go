@@ -18,3 +18,11 @@ func ErrorHandlingMiddleware(next DefaultHandler) DefaultHandler {
 		return
 	}
 }
+
+func CORSMiddleware(next DefaultHandler) DefaultHandler {
+	return func(request events.APIGatewayProxyRequest) (resp events.APIGatewayProxyResponse, err error) {
+		resp, err = next(request)
+		resp.Headers["Access-Control-Allow-Origin"] = "*"
+		return
+	}
+}

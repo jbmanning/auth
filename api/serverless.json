@@ -1,6 +1,6 @@
 {
-  "service": "auth-v3",
-  "plugins": ["serverless-hooks-plugin", "serverless-offline"],
+  "service": "auth",
+  "plugins": ["serverless-hooks-plugin"],
   "provider": {
     "name": "aws",
     "region": "us-east-1",
@@ -32,7 +32,12 @@
       "prod": 5,
       "default": 1
     },
-    "tableThroughput": "${self:custom.tableThroughputs.${self:provider.stage}, self:custom.tableThroughputs.default}"
+    "tableThroughput": "${self:custom.tableThroughputs.${self:provider.stage}, self:custom.tableThroughputs.default}",
+    "hooks": {
+      "before:package:createDeploymentArtifacts:": [
+        "node ../scripts/go-build.js"
+      ]
+    }
   },
   "package": {
     "individually": true,

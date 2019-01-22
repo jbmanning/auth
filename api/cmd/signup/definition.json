@@ -1,9 +1,9 @@
 {
   "signup": {
     "package": {
-      "include": ["bin/signup"]
+      "include": ["bin/signup-post"]
     },
-    "hander": "bin/signup",
+    "handler": "bin/signup-post",
     "events": [
       {
         "http": {

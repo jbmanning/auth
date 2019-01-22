@@ -42,6 +42,6 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 }
 
 func main() {
-	h := www.ErrorHandlingMiddleware(Handler)
+	h := www.ErrorHandlingMiddleware(www.CORSMiddleware(Handler))
 	lambda.Start(h)
 }
