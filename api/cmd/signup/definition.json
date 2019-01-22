@@ -1,0 +1,17 @@
+{
+  "signup": {
+    "package": {
+      "include": ["bin/signup"]
+    },
+    "hander": "bin/signup",
+    "events": [
+      {
+        "http": {
+          "path": "/signup",
+          "method": "POST",
+          "cors": true
+        }
+      }
+    ]
+  }
+}

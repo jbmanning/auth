@@ -1,0 +1,17 @@
+{
+  "login": {
+    "package": {
+      "include": ["bin/login"]
+    },
+    "hander": "bin/login",
+    "events": [
+      {
+        "http": {
+          "path": "/login",
+          "method": "POST",
+          "cors": true
+        }
+      }
+    ]
+  }
+}
