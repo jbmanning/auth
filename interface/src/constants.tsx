@@ -1,6 +1,6 @@
 const API_URL = "https://api.jman.me/auth";
 
-export const SIGNUP_URL = `${API_URL}/signup`;
+export const SIGNUP_URL = `${API_URL}/create`;
 export const LOGIN_URL = `${API_URL}/login`;
 export const DEFAULT_FETCH_PROPS = {
   method: "POST",

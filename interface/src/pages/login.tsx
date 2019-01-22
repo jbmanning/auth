@@ -124,6 +124,8 @@ class LoginForm extends PureComponent {
     } else {
       if (loginAPIResponse === null) {
         errors.push("api request failed");
+      } else {
+        errors = errors.concat(loginAPIResponse.errors);
       }
     }
 

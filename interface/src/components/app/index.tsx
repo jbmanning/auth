@@ -28,11 +28,12 @@ class App extends PureComponent<IAppProps> {
       component: Login
     },
     {
-      path: "/create",
+      path: "/signup",
       component: Signup
     },
     {
       path: "/",
+      exact: true,
       render: (props) => <Redirect {...props} to="/signup" />
     }
   ];

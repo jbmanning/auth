@@ -98,7 +98,10 @@ class SignupForm extends PureComponent {
   };
 
   static responseSchema = t.type({
-    errors: t.array(t.string)
+    errors: t.array(t.string),
+    name_errors: t.array(t.string),
+    email_errors: t.array(t.string),
+    password_errors: t.array(t.string)
   });
 
   submitSignup = async () => {
@@ -129,15 +132,21 @@ class SignupForm extends PureComponent {
 
     let errors: Array<string> = [];
     let { value: apiResponse } = parseUnknown(SignupForm.responseSchema, resp);
+    console.log("RESP");
+    console.log(apiResponse);
 
-    if (apiResponse !== null && apiResponse.errors.length === 0) {
-      errors = [`SUCCESS!`];
+    if (apiResponse === null) {
+      errors.push("api request failed");
     } else {
-      if (apiResponse === null) {
-        errors.push("api request failed");
-      } else {
-        errors = errors.concat(apiResponse.errors);
-      }
+      errors = errors
+        .concat(apiResponse.errors)
+        .concat(apiResponse.name_errors)
+        .concat(apiResponse.email_errors)
+        .concat(apiResponse.password_errors);
+    }
+
+    if (errors.length === 0) {
+      errors = [`SUCCESS!`];
     }
 
     this.setState({

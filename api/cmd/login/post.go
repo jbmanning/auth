@@ -22,39 +22,32 @@ type LoginResponse struct {
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	params := &LoginParams{}
 	var user *de.User
-	errs := []string{}
 
 	err := json.Unmarshal([]byte(request.Body), params)
 	if err != nil {
-		errs = append(errs, www.InvalidJSONError)
+		return www.GetResp(400, LoginResponse{
+			Errors: []string{www.InvalidJSONError},
+		})
 	} else {
 		user = de.GetUser(params.Email)
 	}
 
 	if user == nil || !crypto.CompareHashAndPassword(user.Hash, params.Password) {
 		user = nil
-		errs = append(errs, www.InvalidEmailPasswordError)
+		return www.GetResp(400, LoginResponse{
+			Errors: []string{www.InvalidEmailPasswordError},
+		})
 	}
 
 	code := 400
-	resp := LoginResponse{
-		Errors: errs,
-	}
 	if user != nil {
 		code = 200
-		resp.Name = user.Name
-
 	}
 
-	body, err := json.Marshal(resp)
-	if err != nil {
-		panic(err)
-	}
-
-	return events.APIGatewayProxyResponse{
-		StatusCode: code,
-		Body:       string(body),
-	}, nil
+	return www.GetResp(code, LoginResponse{
+		Errors: []string{},
+		Name:   user.Name,
+	})
 }
 
 func main() {

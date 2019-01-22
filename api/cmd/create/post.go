@@ -20,7 +20,10 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	err := json.Unmarshal([]byte(request.Body), params)
 	if err != nil {
 		return www.GetResp(400, CreateResponse{
-			Errors: []string{www.InvalidJSONError},
+			Errors:         []string{www.InvalidJSONError},
+			NameErrors:     []string{},
+			EmailErrors:    []string{},
+			PasswordErrors: []string{},
 		})
 	}
 
@@ -35,6 +38,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	}
 
 	return www.GetResp(code, CreateResponse{
+		Errors:         []string{},
 		NameErrors:     creationErrs.NameErrors,
 		EmailErrors:    creationErrs.EmailErrors,
 		PasswordErrors: creationErrs.PasswordErrors,
