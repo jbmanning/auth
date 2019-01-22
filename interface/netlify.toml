@@ -1,0 +1,9 @@
+[build]
+    base = "interface/"
+
+    command = "yarn build"
+    publish = "build/"
+
+[[redirects]]
+    from = "/*"
+    to = "/"
