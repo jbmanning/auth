@@ -22,7 +22,7 @@ so if one feature takes longer to implement it may hold up other features.
 - [ ] OpenID Connect - 15%
     - [ ] Document endpoints and functionality
     - [ ] Implementation
-- [ ] Web Interface - 90%
+- [ ] Web Interface - 45%
     - [ ] Interfaces
         - [x] Signup
         - [x] Login
